@@ -25,8 +25,8 @@ A pure Ruby client for generating Ganglia 3.1.x+ gmetric meta and metric packets
 	  :type => 'uint8'
 	)
 
- 	# s[0] = meta packet
-	# s[1] = gmetric packet
+ 	# g[0] = meta packet
+	# g[1] = gmetric packet
 	
 	s = UDPSocket.new
 	s.connect("127.0.0.1", 8670)
