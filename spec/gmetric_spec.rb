@@ -1,23 +1,67 @@
 require "helper"
 
 describe Ganglia::GMetric do
-  
+
+  describe Ganglia::XDRPacket do
+    def hex(data)
+      [data].pack("H")
+    end
+
+    it "should pack an int & uint into XDR format" do
+      xdr = Ganglia::XDRPacket.new
+      xdr.pack_int(1)
+      xdr.data.should == "\000\000\000\001"
+
+      xdr = Ganglia::XDRPacket.new
+      xdr.pack_uint(8)
+      xdr.data.should == "\000\000\000\b"
+    end
+
+    it "should pack string" do
+      xdr = Ganglia::XDRPacket.new
+      xdr.pack_string("test")
+      xdr.data.should == "\000\000\000\004test"
+    end
+  end
+
   it "should pack GMetric into XDR format from Ruby hash" do
-    result = "0000000000000006737472696e67000000000003666f6f00000000036261720000000000000000030000003c00000000"
     data = {
       :slope => 'both',
       :name => 'foo',
-      :val => 'bar',
+      :value => 'bar',
       :tmax => 60,
       :units => '',
       :dmax => 0,
       :type => 'string'
     }
-    
+
     g = Ganglia::GMetric.pack(data)
-    g.size.should == 48
-    # g.hex.should == result
-    
+    g.size.should == 2
+    g[0].should == "\000\000\000\200\000\000\000\000\000\000\000\003foo\000\000\000\000\000\000\000\000\006string\000\000\000\000\000\003foo\000\000\000\000\000\000\000\000\003\000\000\000<\000\000\000\000\000\000\000\000"
+    g[1].should == "\000\000\000\205\000\000\000\000\000\000\000\003foo\000\000\000\000\000\000\000\000\002%s\000\000\000\000\000\003bar\000"
   end
 
+  it "should raise an error on missing name, value, type" do
+    %w(name value type).each do |key|
+      lambda {
+        data = {:name => 'a', :type => 'b', :value => 'c'}
+        data.delete key.to_sym
+        Ganglia::GMetric.pack(data)
+      }.should raise_error
+    end
+  end
+
+  it "should verify type and raise error on invalid type" do
+    %w(string int8 uint8 int16 uint16 int32 uint32 float double).each do |type|
+      lambda {
+        data = {:name => 'a', :type => type, :value => 'c'}
+        Ganglia::GMetric.pack(data)
+      }.should_not raise_error
+    end
+
+    lambda {
+      data = {:name => 'a', :type => 'int', :value => 'c'}
+      Ganglia::GMetric.pack(data)
+    }.should raise_error
+  end
 end
