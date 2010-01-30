@@ -31,6 +31,10 @@ module Ganglia
         :dmax     => 0
       }.merge(metric)
       
+      # convert bools to ints
+      metric[:spoof] = 1 if metric[:spoof].is_a? TrueClass
+      metric[:spoof] = 0 if metric[:spoof].is_a? FalseClass
+      
       raise "Missing key, value, type" if not metric.key? :name or not metric.key? :value or not metric.key? :type
       raise "Invalid metric type" if not %w(string int8 uint8 int16 uint16 int32 uint32 float double).include? metric[:type]
       

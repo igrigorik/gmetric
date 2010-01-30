@@ -64,4 +64,15 @@ describe Ganglia::GMetric do
       Ganglia::GMetric.pack(data)
     }.should raise_error
   end
+
+  it "should allow host spoofing" do
+    lambda {
+      data = {:name => 'a', :type => 'uint8', :value => 'c', :spoof => 1, :host => 'host'}
+      Ganglia::GMetric.pack(data)
+      
+      data = {:name => 'a', :type => 'uint8', :value => 'c', :spoof => true, :host => 'host'}
+      Ganglia::GMetric.pack(data)
+    }.should_not raise_error
+
+  end
 end
