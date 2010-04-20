@@ -23,7 +23,8 @@ module Ganglia
 
     def self.pack(metric)
       metric = {
-        :hostname => '',   
+        :hostname => '',
+        :group    => '',   
         :spoof    => 0,
         :units    => '',
         :slope    => 'both',
@@ -40,21 +41,28 @@ module Ganglia
       
       meta = XDRPacket.new
       data = XDRPacket.new
-      
+
       # METADATA payload
       meta.pack_int(128)                            # gmetadata_full
       meta.pack_string(metric[:hostname])           # hostname
       meta.pack_string(metric[:name].to_s)          # name of the metric
       meta.pack_int(metric[:spoof].to_i)            # spoof hostname flag
-      
+
       meta.pack_string(metric[:type].to_s)          # one of: string, int8, uint8, int16, uint16, int32, uint32, float, double
       meta.pack_string(metric[:name].to_s)          # name of the metric 
       meta.pack_string(metric[:units].to_s)         # units for the value, e.g. 'kb/sec'
       meta.pack_int(SLOPE[metric[:slope]])          # sign of the derivative of the value over time, one of zero, positive, negative, both, default both
       meta.pack_uint(metric[:tmax].to_i)            # maximum time in seconds between gmetric calls, default 60
       meta.pack_uint(metric[:dmax].to_i)            # lifetime in seconds of this metric, default=0, meaning unlimited
-      meta.pack_int(0)                                                   
-                                                                         
+
+      ## MAGIC NUMBER: equals the elements of extra data, here it's 1 because I added Group. 
+      meta.pack_int(1) 
+    
+      ## METADATA EXTRA DATA: functionally key/value
+      meta.pack_string("GROUP")
+      meta.pack_string(metric[:group].to_s)
+
+
       # DATA payload                                                     
       data.pack_int(128+5)                          # string message     
       data.pack_string(metric[:hostname].to_s)      # hostname           
