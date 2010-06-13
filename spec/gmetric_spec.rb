@@ -37,7 +37,7 @@ describe Ganglia::GMetric do
 
     g = Ganglia::GMetric.pack(data)
     g.size.should == 2
-    g[0].should == "\000\000\000\200\000\000\000\000\000\000\000\003foo\000\000\000\000\000\000\000\000\006string\000\000\000\000\000\003foo\000\000\000\000\000\000\000\000\003\000\000\000<\000\000\000\000\000\000\000\000"
+    g[0].should == "\000\000\000\200\000\000\000\000\000\000\000\003foo\000\000\000\000\000\000\000\000\006string\000\000\000\000\000\003foo\000\000\000\000\000\000\000\000\003\000\000\000<\000\000\000\000\000\000\000\001\000\000\000\005GROUP\000\000\000\000\000\000\000"
     g[1].should == "\000\000\000\205\000\000\000\000\000\000\000\003foo\000\000\000\000\000\000\000\000\002%s\000\000\000\000\000\003bar\000"
   end
 
@@ -69,10 +69,19 @@ describe Ganglia::GMetric do
     lambda {
       data = {:name => 'a', :type => 'uint8', :value => 'c', :spoof => 1, :host => 'host'}
       Ganglia::GMetric.pack(data)
-      
+
       data = {:name => 'a', :type => 'uint8', :value => 'c', :spoof => true, :host => 'host'}
       Ganglia::GMetric.pack(data)
     }.should_not raise_error
 
+  end
+
+  it "should allow group meta data" do
+    lambda {
+      data = {:name => 'a', :type => 'uint8', :value => 'c', :spoof => 1, :host => 'host', :group => 'test'}
+      g = Ganglia::GMetric.pack(data)
+      g[0].should == "\000\000\000\200\000\000\000\000\000\000\000\001a\000\000\000\000\000\000\001\000\000\000\005uint8\000\000\000\000\000\000\001a\000\000\000\000\000\000\000\000\000\000\003\000\000\000<\000\000\000\000\000\000\000\001\000\000\000\005GROUP\000\000\000\000\000\000\004test"
+
+    }.should_not raise_error
   end
 end
