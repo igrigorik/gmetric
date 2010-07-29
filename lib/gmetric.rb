@@ -13,12 +13,22 @@ module Ganglia
     }
 
     def self.send(host, port, metric)
-      conn = UDPSocket.new
-      conn.connect(host, port)
       gmetric = self.pack(metric)
 
-      conn.send gmetric[0], 0
-      conn.send gmetric[1], 0
+      if defined?(EventMachine) and EventMachine.reactor_running?
+        # open an ephemereal UDP socket since
+        # we do not plan on recieving any data
+        conn = EM.open_datagram_socket('', 0)
+
+        conn.send_datagram gmetric[0], host, port
+        conn.send_datagram gmetric[1], host, port
+      else
+        conn = UDPSocket.new
+        conn.connect(host, port)
+
+        conn.send gmetric[0], 0
+        conn.send gmetric[1], 0
+      end
     end
 
     def self.pack(metric)

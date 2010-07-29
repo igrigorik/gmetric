@@ -84,4 +84,23 @@ describe Ganglia::GMetric do
 
     }.should_not raise_error
   end
+
+  it "should use EM reactor if used within event loop" do
+    pending 'stub out connection class'
+
+    require 'rubygems'
+    require 'eventmachine'
+    EventMachine.run do
+      Ganglia::GMetric.send("127.0.0.1", 1111, {
+                              :name => 'pageviews',
+                              :units => 'req/min',
+                              :type => 'uint8',
+                              :value => 7000,
+                              :tmax => 60,
+                              :dmax => 300
+      })
+
+      EM.stop
+    end
+  end
 end
