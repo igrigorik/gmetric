@@ -22,12 +22,14 @@ module Ganglia
 
         conn.send_datagram gmetric[0], host, port
         conn.send_datagram gmetric[1], host, port
+        conn.close_connection_after_writing
       else
         conn = UDPSocket.new
         conn.connect(host, port)
 
         conn.send gmetric[0], 0
         conn.send gmetric[1], 0
+        conn.close
       end
     end
 
