@@ -14,7 +14,7 @@ Ganglia::GMetric.send("127.0.0.1", 8670, {
   :value => 7000,
   :tmax => 60,
   :dmax => 300,
-:group => 'test'
+  :group => 'test'
 })
 ```
 
