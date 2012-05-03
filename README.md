@@ -16,7 +16,6 @@ Ganglia::GMetric.send("127.0.0.1", 8670, {
   :dmax => 300,
   :group => 'test'
 })
-```
 
 ## Example: Generating the Meta and Metric packets
 
@@ -38,7 +37,17 @@ s = UDPSocket.new
 s.connect("127.0.0.1", 8670)
 s.send g[0], 0
 s.send g[1], 0
+
 ```
+
+## Spoofing a hostname in gmetrics ##
+
+To spoof a hostname with the gmetric library you will need to add the following keys to your gmetric.
+This works with both GMetric.send() and GMetric.pack().
+ 
+* spoof - takes a value of 1 or True
+* hostname - expects a value of ip_address:hostname.
+
 
 ### License
 
