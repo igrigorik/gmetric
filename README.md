@@ -40,12 +40,13 @@ s.send g[1], 0
 
 ```
 
-## Spoofing Hostname in gmetrics ##
+## Spoofing a hostname in gmetrics ##
+
 To spoof a hostname with the gmetric library you will need to add the following keys to your gmetric.
 This works with both GMetric.send() and GMetric.pack().
  
 * spoof - takes a value of 1 or True
-* hostname - expects a value of <ip>:<hostname>.
+* hostname - expects a value of ip_address:hostname.
 
 
 ### License
