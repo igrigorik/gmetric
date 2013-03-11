@@ -88,7 +88,6 @@ describe Ganglia::GMetric do
   it "should use EM reactor if used within event loop" do
     pending 'stub out connection class'
 
-    require 'rubygems'
     require 'eventmachine'
     EventMachine.run do
       Ganglia::GMetric.send("127.0.0.1", 1111, {

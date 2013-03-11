@@ -13,10 +13,10 @@ Gem::Specification.new do |s|
   s.description = %q{Pure Ruby interface for generating Ganglia gmetric packets}
   s.email = %q{ilya@igvita.com}
   s.extra_rdoc_files = [
-    "README.rdoc"
+    "README.md"
   ]
   s.files = [
-    "README.rdoc",
+    "README.md",
      "Rakefile",
      "VERSION",
      "gmetric.gemspec",
@@ -44,5 +44,8 @@ Gem::Specification.new do |s|
     end
   else
   end
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rspec"
+  s.add_development_dependency "eventmachine"
 end
 
