@@ -16,7 +16,7 @@ Ganglia::GMetric.send("127.0.0.1", 8670, {
   :dmax => 300,
   :group => 'test'
 })
-
+```
 ## Example: Generating the Meta and Metric packets
 
 ```ruby
@@ -37,7 +37,6 @@ s = UDPSocket.new
 s.connect("127.0.0.1", 8670)
 s.send g[0], 0
 s.send g[1], 0
-
 ```
 
 ## Spoofing a hostname in gmetrics ##
